@@ -8,7 +8,8 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      repos: []
+      repos: [],
+      added: ''
     }
 
     this.search = this.search.bind(this);
@@ -17,14 +18,6 @@ class App extends React.Component {
   }
 
   fetch() {
-    // fetch('/repos')
-    // .then(response => response.json())
-    // .then(data => {
-    //   this.setState(
-    //     {repos: data}
-
-    //   )
-    //   })
     let newData;
     $.get('/repos', (data) => {
       console.log(data);
@@ -40,29 +33,26 @@ class App extends React.Component {
 
   search (term) {
     console.log(`${term} was searched`);
-    //TODO
-
-    // fetch('/repos', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body: JSON.stringify({term: term})
-    // })
-    // .then(response => this.fetch());
 
     $.post('/repos', {term: term})
-    .done( () => {
-      console.log('fetch');
+    .done( (data) => {
+      this.setState({
+        added: data
+      })
       this.fetch();
     });
   }
 
   render () {
+    let added = <div></div>;
+    if (this.state.added) {
+      added = <div>{this.state.added} new repos imported</div>
+    }
     return (<div>
       <h1>Github Fetcher</h1>
       <RepoList repos={this.state.repos}/>
       <Search onSearch={this.search.bind(this)}/>
+      {added}
     </div>)
   }
 }

@@ -17,7 +17,7 @@ app.post('/repos', function (req, res) {
     for (let i in response.data) {
       db.save(response.data[i]);
     }
-    res.end();
+    res.end(JSON.stringify(response.data.length));
   })
 });
 
